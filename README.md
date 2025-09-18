@@ -1,40 +1,40 @@
-# 🚴‍♂️ Bike Rental Data Pipeline with Weather Data ☁️
+# 🚴‍♂️ Bike Rental & Weather Data Pipeline ☁️
 
 ![Dashboard](images/dashboard.jpg)
 
-## Project Overview
+## Project Summary
 
-This project focuses on collecting and integrating bike rental data with weather data from an API. The solution is built using Docker, Dagster, PostgreSQL, and Python, following Kimball’s star schema and Slowly Changing Dimensions (SCD). The pipeline is designed to run hourly, generating over 1 million data points daily.
+This project demonstrates how bike rental data can be collected and enriched with live weather information from an external API. The solution leverages **Docker**, **Dagster**, **PostgreSQL**, and **Python**, while following **Kimball’s star schema** principles and applying **Slowly Changing Dimensions (SCD)**. The pipeline is configured to execute every hour, producing more than **one million records per day**.
 
-## Tech Stack
+## Technology Stack
 
-- **Docker:** Containerizes the entire application, with services running independently.
-- **Dagster:** Automates and orchestrates the pipeline to run hourly.
-- **PostgreSQL:** Stores both historical rental data and real-time weather data.
-- **Python:** Handles data extraction, transformation, and loading (ETL).
+- **Docker:** Ensures the application runs inside isolated containers with independent services.  
+- **Dagster:** Handles workflow orchestration and schedules the hourly jobs.  
+- **PostgreSQL:** Stores rental history alongside real-time weather datasets.  
+- **Python:** Powers the ETL processes including extraction, transformation, and loading.  
 
 ![Schemas](images/table_schema.png)
 
-## Data Pipeline
+## Pipeline Workflow
 
-1. **Extract:** Gather latitude and longitude for cities worldwide, then fetch weather data using an API.
-2. **Transform:** Create and automate SQL `INSERT` statements for PostgreSQL.
-3. **Load:** Insert both historical and real-time data into PostgreSQL.
-4. **Orchestrate:** Run all services in Docker containers, managed by Dagster.
+1. **Extract:** Collect city coordinates (latitude/longitude) across the globe and fetch weather metrics through the API.  
+2. **Transform:** Generate dynamic SQL `INSERT` commands tailored for PostgreSQL.  
+3. **Load:** Persist both historical rentals and streaming weather updates into the database.  
+4. **Orchestrate:** Deploy and manage all services via Docker containers under Dagster’s scheduling.  
 
 ![assets](images/dags.png)
 
-## Getting Started
+## Setup Guide
 
-### Prerequisites
+### Requirements
 
-- **Docker** and **Python 3.8+** should be installed on your machine.
+- Install **Docker**  
+- Install **Python 3.8+**  
 
-### Installation
+### Installation Steps
 
-1. **Clone the repository:**  
+1. **Clone this repository:**  
    ```bash
    git clone https://github.com/extrm-gn/DE-Bike-rental.git
    cd DE-Bike-rental
    docker-compose up --build
-
