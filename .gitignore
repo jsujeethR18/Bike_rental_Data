@@ -1,0 +1,12 @@
+.env
+
+__pycache__/
+
+Datasets/city_weather.csv
+Datasets/selected_city.csv
+
+bike_data/
+
+zcountry_table_inserts.sql
+zcity_table_inserts.sql
+zzcity_country_table_inserts.sql

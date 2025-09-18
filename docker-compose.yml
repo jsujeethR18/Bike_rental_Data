@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  city_sampler:
+    build: .
+    container_name: city_sampler
+    volumes:
+    -  ./Datasets:/app/Datasets
+    env_file:
+    -  .env 
+    command: python city_sampler.py
+  
+  data_ingestion:
+    build: .
+    container_name: data_ingestion
+    volumes:
+    -  ./Datasets:/app/Datasets
+    depends_on:
+      - city_sampler
+    env_file:
+      - .env
+    command: python data_ingestion.py
+
+  generate_sql_inserts:
+    build: .
+    container_name: generate_sql_inserts
+    volumes: 
+      - ./Datasets:/app/Datasets
+    depends_on:
+      db:
+        condition: service_healthy
+      data_ingestion:
+        condition: service_completed_successfully
+    command: python generate_sql_inserts.py
+
+
+  db:
+    image: postgres:13
+    container_name: bike_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: bike_db
+    volumes:
+      - ~/docker/postgres-init:/docker-entrypoint-initdb.d
+      - bike_data:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d bike_db"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+      
+  dagster-dagit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+
+  dagster-daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "dagster-daemon run"
+    environment:
+      - PGPASS=root
+      - PGUID=root
+    depends_on:
+      - db
+
+volumes:
+  bike_data:
+    name: bike_data
